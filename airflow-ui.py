@@ -106,50 +106,55 @@ def ansible_info():
     return render_template("airflow_info.html")
 
 
-@app.route("/ansible/local")
-def ansible_local():
+
+
+@app.route("/airflow/setup")
+def airflow_setup():
     try:
-        # Check if Ansible is already installed
+        output_logs = ""
+
+        # Check if Docker is installed
         try:
-            ansible_version = subprocess.check_output(["ansible", "--version"], stderr=subprocess.STDOUT).decode()
-            return render_template("ansible_local.html", result=f"✅ Ansible is already installed:\n{ansible_version}")
-        except subprocess.CalledProcessError:
-            pass  # not installed yet
+            docker_version = subprocess.check_output(["docker", "--version"], stderr=subprocess.STDOUT).decode()
+            output_logs += f"🐳 Docker found: {docker_version}\n"
         except FileNotFoundError:
-            pass  # ansible not found
+            return render_template("airflow_setup.html", result="❌ Docker is not installed.")
 
-        # Detect OS
-        os_release = subprocess.check_output(["cat", "/etc/os-release"]).decode()
-        if "debian" in os_release.lower() or "ubuntu" in os_release.lower():
-            install_cmd = [
-                ["sudo", "apt", "update"],
-                ["sudo", "apt", "install", "-y", "ansible"]
-            ]
-            os_type = "Debian-based (APT)"
-        elif "rhel" in os_release.lower() or "centos" in os_release.lower() or "fedora" in os_release.lower():
-            install_cmd = [
-                ["sudo", "yum", "install", "-y", "epel-release"],
-                ["sudo", "yum", "install", "-y", "ansible"]
-            ]
-            os_type = "RHEL-based (YUM)"
-        else:
-            return render_template("ansible_local.html", result="❌ Unsupported OS for automatic installation.")
+        # Check if Docker Compose is installed
+        try:
+            compose_version = subprocess.check_output(["docker-compose", "--version"], stderr=subprocess.STDOUT).decode()
+            output_logs += f"📦 Docker Compose found: {compose_version}\n"
+        except FileNotFoundError:
+            return render_template("airflow_setup.html", result="❌ Docker Compose is not installed.")
 
-        output_logs = f"🔍 Detected OS: {os_type}\n"
+        # Create airflow directory if not exists
+        airflow_dir = "airflow"
+        os.makedirs(airflow_dir, exist_ok=True)
 
-        for cmd in install_cmd:
-            process = subprocess.run(cmd, check=True, capture_output=True, text=True)
-            output_logs += f"\n$ {' '.join(cmd)}\n{process.stdout}"
+        # Download docker-compose.yaml file
+        compose_file_url = "https://airflow.apache.org/docs/apache-airflow/3.0.3/docker-compose.yaml"
+        subprocess.run(["curl", "-LfO", compose_file_url], cwd=airflow_dir, check=True)
+        output_logs += f"📥 Downloaded docker-compose.yaml into ./{airflow_dir}\n"
 
-        ansible_version = subprocess.check_output(["ansible", "--version"]).decode()
-        output_logs += f"\n✅ Ansible Installed Successfully:\n{ansible_version}"
+        # Initialize Airflow (create directories and set permissions)
+        env_file = os.path.join(airflow_dir, ".env")
+        if not os.path.exists(env_file):
+            with open(env_file, "w") as f:
+                f.write("AIRFLOW_UID=50000\n")
+            output_logs += f"⚙️ Created .env file with default AIRFLOW_UID=50000\n"
+
+        # Start Airflow with docker-compose
+        subprocess.run(["docker-compose", "up", "-d"], cwd=airflow_dir, check=True)
+        output_logs += "🚀 Airflow is starting on http://localhost:8080\n"
+        output_logs += "🧑 Default login: username = airflow | password = airflow\n"
 
     except subprocess.CalledProcessError as e:
-        output_logs = f"❌ Error during installation:\n{e}\n\n{e.stderr if hasattr(e, 'stderr') else ''}"
+        output_logs += f"❌ Error:\n{e}\n\n{e.stderr if hasattr(e, 'stderr') else ''}"
     except Exception as ex:
-        output_logs = f"⚠️ Unexpected error: {str(ex)}"
+        output_logs += f"⚠️ Unexpected error: {str(ex)}"
 
-    return render_template("ansible_local.html", result=output_logs)
+    return render_template("airflow_setup.html", result=output_logs)
+
 
 
 
