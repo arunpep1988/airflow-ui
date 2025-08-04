@@ -101,9 +101,9 @@ def prereq():
 
 ##################ANSIBLE INSTALLATION##################
 
-@app.route("/ansible")
+@app.route("/airflow")
 def ansible_info():
-    return render_template("ansible_info.html")
+    return render_template("airflow_info.html")
 
 
 @app.route("/ansible/local")

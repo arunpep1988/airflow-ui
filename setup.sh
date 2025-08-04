@@ -59,5 +59,5 @@ fi
 
 
 # Run Python app
-echo "🚀 Running ansible-ui.py..."
-python3 ansible-ui.py
+echo "🚀 Running airflow-ui.py..."
+python3 airflow-ui.py
