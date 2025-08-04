@@ -29,16 +29,22 @@
             white-space: pre-wrap;
             word-break: break-word;
         }
-        .btn-back {
+        .btn {
             margin-top: 30px;
             display: inline-block;
             padding: 12px 25px;
-            background-color: #6c757d;
+            background-color: #007bff;
             color: white;
             text-decoration: none;
             border-radius: 8px;
         }
-        .btn-back:hover {
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
             background-color: #5a6268;
         }
     </style>
@@ -50,8 +56,11 @@
 
         <pre>{{ result }}</pre>
 
-        <a class="btn-back" href="/">⬅ Back to Home</a>
-        <a class="btn-back" href="/airflow">⬅ Airflow</a>
+        {% if "http://localhost:8080" in result %}
+            <a class="btn" href="http://localhost:8080" target="_blank">🌐 Open Airflow UI</a>
+        {% endif %}
+
+        <a class="btn btn-secondary" href="/">⬅ Back to Home</a>
     </div>
 </body>
 </html>
