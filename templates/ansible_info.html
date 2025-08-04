@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ansible Overview</title>
+    <title>Airflow Overview</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -19,19 +19,19 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         h1 {
-            color: #007bff;
+            color: #017cff;
         }
         .btn {
             display: inline-block;
             margin: 20px 10px 0 0;
             padding: 12px 25px;
-            background-color: #007bff;
+            background-color: #017cff;
             color: white;
             text-decoration: none;
             border-radius: 8px;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #005ea3;
         }
         .btn-back {
             margin-top: 30px;
@@ -49,19 +49,20 @@
 </head>
 <body>
     <div class="container">
-        <h1>📘 Ansible Overview</h1>
+        <h1>📘 Apache Airflow Overview</h1>
         <p>
-            <strong>Ansible</strong> is an open-source automation tool used for configuration management, application deployment, and task automation.
+            <strong>Apache Airflow</strong> is an open-source platform to programmatically author, schedule, and monitor workflows as Directed Acyclic Graphs (DAGs).
         </p>
         <ul>
-            <li>✅ <strong>Controller Node:</strong> The machine where Ansible is installed and from where all tasks are executed.</li>
-            <li>✅ <strong>Worker Nodes:</strong> Target systems managed over SSH or WinRM, without needing any agent installed.</li>
-            <li>🚀 <strong>Execution Environment:</strong> A container-based solution to package dependencies using <code>ansible-navigator</code> and <code>ansible-builder</code>.</li>
+            <li>✅ <strong>Scheduler:</strong> Responsible for scheduling jobs and triggering tasks based on defined schedules.</li>
+            <li>✅ <strong>Executor:</strong> Executes the tasks; examples include SequentialExecutor, LocalExecutor, CeleryExecutor.</li>
+            <li>🚀 <strong>Webserver:</strong> Provides a UI to monitor DAG runs, task status, logs, and manage workflows.</li>
+            <li>✅ <strong>Workers:</strong> Nodes that actually run the tasks, especially in distributed setups.</li>
         </ul>
 
         <p>How would you like to proceed?</p>
-        <a class="btn" href="/ansible/local">🖥️ Local Ansible Installation</a>
-        <a class="btn" href="/ansible/execution-environment">📦 Execution Environment</a>
+        <a class="btn" href="/airflow/dags">📁 Explore Sample DAGs</a>
+        <a class="btn" href="/airflow/setup">⚙️ Airflow Setup & Configuration</a>
         <br>
         <a class="btn-back" href="/">⬅ Back to Home</a>
        
